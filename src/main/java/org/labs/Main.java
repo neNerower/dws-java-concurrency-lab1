@@ -9,9 +9,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
 
-    private static final int FOOD_AMOUNT = 10;
-    private static final int SERVANTS_COUNT = 1;
-    private static final int EATER_COUNT = 5;
+    private static final int FOOD_AMOUNT = 1000;
+    private static final int SERVANTS_COUNT = 7;
+    private static final int EATER_COUNT = 30;
 
     public static void main(String[] args) {
         // создать

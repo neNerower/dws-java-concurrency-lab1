@@ -17,6 +17,11 @@ public class Kitchen {
     }
 
     private boolean deliver() {
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         int remains = foodAmount.decrementAndGet();
         System.out.printf("Доставка | Осталось еды: %d%n", remains);
         return remains >= 0;
