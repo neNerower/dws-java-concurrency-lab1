@@ -3,19 +3,20 @@ package org.labs;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
-import lombok.AllArgsConstructor;
+import java.util.function.Function;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Eater implements Runnable {
 
     private final int id;
     private final boolean isEven;
     private final ReentrantLock leftSpoon;
     private final ReentrantLock rightSpoon;
-    private final Supplier<Future<Boolean>> soupProvider;
+    private final Function<Integer, Future<Boolean>> soupProvider;
     private final Runnable endUpRunner;
 
+    private int eatenCount = 0;
 
     @Override
     public void run() {
@@ -26,7 +27,7 @@ public class Eater implements Runnable {
             // дождаться очередной порции
             System.out.printf("Едок %d | Жду порцию%n", id);
             try {
-                boolean wasSoupProvided = soupProvider.get().get();
+                boolean wasSoupProvided = soupProvider.apply(eatenCount).get();
                 if (!wasSoupProvided) {
                     break;
                 }
@@ -48,7 +49,9 @@ public class Eater implements Runnable {
             }
             System.out.printf("Едок %d | Взял ложки%n", id);
 
-            // кушаем и отпускаем ложки
+            // кушаем
+            eatenCount++;
+            // отпускаем ложки
             leftSpoon.unlock();
             rightSpoon.unlock();
 
@@ -56,7 +59,7 @@ public class Eater implements Runnable {
         }
 
         // отметиться, что закончил кушать
-        System.out.printf("Едок %d | Наелся%n", id);
+        System.out.printf("Едок %d | Наелся (%d)%n", id, eatenCount);
         endUpRunner.run();
     }
 

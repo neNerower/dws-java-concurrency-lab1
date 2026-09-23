@@ -1,6 +1,10 @@
 package org.labs;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
@@ -13,7 +17,7 @@ public class Main {
         // создать
         // - еду
         // - пул офиков
-        Kitchen kitchen = new Kitchen(FOOD_AMOUNT, SERVANTS_COUNT);
+        Kitchen kitchen = new Kitchen(FOOD_AMOUNT, getServantsPool(SERVANTS_COUNT));
 
         // - массив ложек
         ReentrantLock[] spoons = new ReentrantLock[EATER_COUNT];
@@ -40,6 +44,11 @@ public class Main {
             kitchen.close();
             System.out.printf("Кухня закрыта%n");
         }
+    }
+
+    private static ExecutorService getServantsPool(int servantCount) {
+        return new ThreadPoolExecutor(servantCount, servantCount, 0, TimeUnit.DAYS,
+            new PriorityBlockingQueue<>());
     }
 
     private static Eater getEater(int i, ReentrantLock[] spoons, Kitchen kitchen, CountDownLatch endUpLatch) {
