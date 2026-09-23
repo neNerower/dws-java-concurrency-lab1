@@ -18,7 +18,7 @@ public class Kitchen {
     private boolean deliver() {
         int remains = foodAmount.decrementAndGet();
         System.out.printf("Доставка | Осталось еды: %d%n", remains);
-        return remains > 0;
+        return remains >= 0;
     }
 
     public Future<Boolean> order() {
